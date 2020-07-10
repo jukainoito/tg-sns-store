@@ -1,6 +1,7 @@
 # coding: utf-8
 from urllib.parse import urlparse
 import socks
+import time
 from telethon import TelegramClient, sync, events
 from telethon.sessions import StringSession
 from telethon import errors
@@ -135,8 +136,11 @@ async def main():
     await receiver.start()
     await receiver.set_chat(args.chat)
     database = DynamoDB()
-    msg = await receiver.receive_top_msg(args.sms_sign)
-    database.put(msg)
+    count = 0
+    while count < 54:
+        msg = await receiver.receive_top_msg(args.sms_sign)
+        database.put(msg)
+        time.sleep(5)
 
 
 if __name__ == '__main__':
