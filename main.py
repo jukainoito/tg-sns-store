@@ -137,7 +137,7 @@ async def main():
     await receiver.set_chat(args.chat)
     database = DynamoDB()
     count = 0
-    while count < 55:
+    while count < (60/12*58):
         msg = await receiver.receive_top_msg(args.sms_sign)
         database.put(msg)
         time.sleep(5)
