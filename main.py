@@ -5,6 +5,7 @@ import time
 from telethon import TelegramClient, sync, events
 from telethon.sessions import StringSession
 from telethon import errors
+import datetime
 import logging
 import argparse
 import boto3
@@ -127,6 +128,15 @@ def init_argument_parser(parser):
     parser.add_argument('-s', '-sms-sign', '--sms-sign', required=True, help='sms sign', metavar="sms sign")
 
 
+def can_run():
+    now_time = datetime.datetime.now().timetuple()
+    if now_time.tm_min > 58:
+        return False
+    if now_time == 58 and now_time.tm_sec >= 30:
+        return False
+    return True
+
+
 async def main():
     parser = argparse.ArgumentParser()
     init_argument_parser(parser)
@@ -136,12 +146,10 @@ async def main():
     await receiver.start()
     await receiver.set_chat(args.chat)
     database = DynamoDB()
-    count = 0
-    while count < (60/12*58):
+    while can_run():
         msg = await receiver.receive_top_msg(args.sms_sign)
         database.put(msg)
         time.sleep(5)
-        count = count + 1
 
 
 if __name__ == '__main__':
