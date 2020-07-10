@@ -141,6 +141,7 @@ async def main():
         msg = await receiver.receive_top_msg(args.sms_sign)
         database.put(msg)
         time.sleep(5)
+        count = count + 1
 
 
 if __name__ == '__main__':
